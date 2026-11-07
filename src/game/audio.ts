@@ -8,6 +8,7 @@ export class Sound {
   private wet!: GainNode;
   private humGain!: GainNode;
   private humTarget = 0;
+  private out: AudioNode | null = null;
   muted = false;
 
   /** Call from a user gesture (click, XR session start). Safe to call repeatedly. */
@@ -29,6 +30,7 @@ export class Sound {
     comp.threshold.value = -18;
     comp.ratio.value = 3;
     comp.connect(ctx.destination);
+    this.out = comp;
 
     this.master = ctx.createGain();
     this.master.gain.value = 0.7;
@@ -198,6 +200,15 @@ export class Sound {
 
   denied(): void {
     this.tone(220, { type: 'triangle', decay: 0.15, gain: 0.05, bend: 0.9 });
+  }
+
+  /** A copy of the final mix as a MediaStream, used by the trailer recorder. */
+  captureStream(): MediaStream | null {
+    this.unlock();
+    if (!this.ctx || !this.out) return null;
+    const dest = this.ctx.createMediaStreamDestination();
+    this.out.connect(dest);
+    return dest.stream;
   }
 
   /** Set the hum level from how much light is on the board (0..1). */
