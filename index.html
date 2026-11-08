@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lumenwright</title>
+    <meta name="description" content="A seated, hands-only light puzzle for Meta Quest. Turn brass mirrors and glass to light every lantern." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23e6c27a'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #1a131f;
+        --plum: #2a1f35;
+        --brass: #d4a85a;
+        --cream: #f3e6c8;
+        --muted: rgba(243, 230, 200, 0.72);
+      }
+      html, body { margin: 0; height: 100%; background: var(--ink); color: var(--cream); overflow: hidden; }
+      #scene-container { position: fixed; inset: 0; }
+      #card {
+        position: fixed; left: 16px; bottom: 16px; max-width: 340px;
+        padding: 18px 20px 16px; border-radius: 14px;
+        background: rgba(26, 19, 31, 0.86); border: 1px solid rgba(212, 168, 90, 0.45);
+        font: 15px/1.45 "Fraunces", Georgia, serif; backdrop-filter: blur(6px);
+      }
+      #card[hidden] { display: none; }
+      #card h1 { margin: 0 0 2px; font-size: 28px; font-weight: 600; letter-spacing: 0.01em; }
+      #card .tag { margin: 0 0 12px; color: var(--muted); font-style: italic; }
+      #card p { margin: 6px 0; }
+      #level-line { color: var(--brass); font-size: 13px; letter-spacing: 0.04em; }
+      #enter-vr {
+        margin: 8px 0 4px; padding: 9px 18px; border-radius: 999px; cursor: pointer;
+        font: 600 15px "Fraunces", Georgia, serif; color: var(--ink);
+        background: linear-gradient(#e6c27a, #b8893a); border: 1px solid #7a5624;
+      }
+      #enter-vr[hidden] { display: none; }
+      #enter-vr:focus-visible { outline: 2px solid var(--cream); outline-offset: 2px; }
+      .mouse { color: var(--muted); font-size: 13px; }
+      @media (max-width: 420px) { #card { right: 16px; max-width: none; } }
+    </style>
+    <script type="module" crossorigin src="./assets/index-BFfaWC0h.js"></script>
+  </head>
+  <body>
+    <div id="scene-container"></div>
+    <div id="card">
+      <h1>Lumenwright</h1>
+      <p class="tag">Turn brass and glass until every lantern is lit.</p>
+      <p id="level-line"></p>
+      <button id="enter-vr" hidden>Enter VR</button>
+      <p id="xr-note"></p>
+      <p class="mouse">No headset? Click a mirror to turn it, drag to spin, drag pieces on rails. R resets, N moves on.</p>
+    </div>
+  </body>
+</html>
