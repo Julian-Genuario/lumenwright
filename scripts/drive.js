@@ -160,7 +160,7 @@
       }
       await wait(150);
       await api.pinch(hand, 0);
-      await api.moveTo(hand, [g[0], g[1] + 0.06, g[2] + 0.04], 300);
+      await api.moveTo(hand, [g[0], g[1] + 0.03, g[2] + 0.06], 300);
       state[hand].rot = graspRot(hand);
       apply(hand);
     },
@@ -179,7 +179,7 @@
       await api.moveTo(hand, [world.x, g[1], world.z], 900);
       await wait(150);
       await api.pinch(hand, 0);
-      await api.moveTo(hand, [world.x, g[1] + 0.06, world.z + 0.04], 300);
+      await api.moveTo(hand, [world.x, g[1] + 0.03, world.z + 0.06], 300);
     },
     wait,
   };
