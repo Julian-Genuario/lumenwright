@@ -61,7 +61,7 @@ export class HandsView {
       if (h.tracked) any = true;
       this.c.copy(this.base).lerp(this.hot, glow[hi] ?? 0);
       for (let j = 0; j < 25; j++) {
-        const r = Math.max(0.0042, h.radii[j] * (j === 0 ? 0.75 : 0.62)) * scale;
+        const r = Math.max(0.004, h.radii[j] * (j === 0 ? 0.5 : j % 5 === 0 || j === 1 ? 0.42 : 0.55)) * scale;
         this.a.set(h.joints[j * 3], h.joints[j * 3 + 1], h.joints[j * 3 + 2]);
         this.m.compose(this.a, this.q.identity(), this.s.set(r, r, r));
         this.joints.setMatrixAt(jo + j, this.m);
@@ -73,7 +73,7 @@ export class HandsView {
         this.b.set(h.joints[k * 3], h.joints[k * 3 + 1], h.joints[k * 3 + 2]);
         const len = this.a.distanceTo(this.b);
         const palm = n >= 24;
-        const r = (palm ? 0.007 : Math.max(0.0034, Math.min(h.radii[i], h.radii[k]) * 0.5)) * scale;
+        const r = (palm ? 0.0055 : Math.max(0.0032, Math.min(h.radii[i], h.radii[k]) * 0.42)) * scale;
         this.b.sub(this.a);
         if (len > 1e-5) this.q.setFromUnitVectors(UP, this.b.normalize());
         this.a.addScaledVector(this.b, len / 2);
