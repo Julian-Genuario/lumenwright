@@ -130,10 +130,28 @@ export class HandTracker {
   }
 }
 
-/** Signed rotation (radians) of a world-space delta rotation around world up. */
-export function twistAroundUp(q: Quaternion): number {
-  let a = 2 * Math.atan2(q.y, q.w);
+/** Signed rotation (radians) of a world-space delta rotation around a unit axis. */
+export function twistAround(q: Quaternion, ax: number, ay: number, az: number): number {
+  const d = q.x * ax + q.y * ay + q.z * az;
+  let a = 2 * Math.atan2(d, q.w);
   if (a > Math.PI) a -= Math.PI * 2;
   if (a < -Math.PI) a += Math.PI * 2;
   return a;
+}
+
+/**
+ * How far a held knob should turn, from the wrist's rotation since the pinch.
+ * People turn small knobs two ways: yawing the hand around the vertical (when
+ * pinching from above) or rolling the forearm like turning a key (when
+ * reaching forward). Take whichever is larger. A clockwise key-turn, seen from
+ * behind the hand, maps to a clockwise turn seen from above.
+ */
+export function knobTwist(delta: Quaternion, fingers: Vector3): number {
+  const yaw = twistAround(delta, 0, 1, 0);
+  // Only the horizontal part of the finger direction acts as a key axis; when
+  // the fingers point straight down, yaw already covers the motion.
+  const len = Math.hypot(fingers.x, fingers.z);
+  if (len < 0.35) return yaw;
+  const roll = twistAround(delta, fingers.x / len, 0, fingers.z / len);
+  return Math.abs(yaw) >= Math.abs(roll) ? yaw : -roll;
 }

@@ -4,7 +4,7 @@
 import { Matrix4, Plane, Quaternion, Raycaster, Vector2, Vector3, type PerspectiveCamera, type Object3D } from '@iwsdk/core';
 import { LEVELS } from './levels.ts';
 import { clonePieces, isRotatable, mod8, trace, type Piece, type TraceResult } from './optics.ts';
-import { HandTracker, twistAroundUp, type HandState } from './hands.ts';
+import { HandTracker, knobTwist, type HandState } from './hands.ts';
 import { Sound } from './audio.ts';
 import { HandsView } from './hands-view.ts';
 import { TableView, type ButtonId, type ButtonView } from './table-view.ts';
@@ -18,6 +18,7 @@ const STEP = Math.PI / 8;
 interface HandGrab {
   piece: number;
   startQ: Quaternion;
+  fingers: Vector3;
   startTurn: number;
 }
 
@@ -276,7 +277,12 @@ export class Game {
         const i = this.nearestPiece(h.pinchPoint, GRAB_RADIUS);
         const takenByOther = [...this.grabs.values()].some((g) => g.piece === i);
         if (i >= 0 && !takenByOther) {
-          this.grabs.set(h, { piece: i, startQ: h.wrist.clone(), startTurn: this.view.pieces[i].turn });
+          this.grabs.set(h, {
+            piece: i,
+            startQ: h.wrist.clone(),
+            fingers: new Vector3(0, 0, -1).applyQuaternion(h.wrist),
+            startTurn: this.view.pieces[i].turn,
+          });
           this.view.pieces[i].held = true;
           this.sound.grab();
         }
@@ -284,7 +290,7 @@ export class Game {
         const v = this.view.pieces[grab.piece];
         if (isRotatable(v.piece)) {
           this.tmpQ.copy(h.wrist).multiply(this.tmp2Q.copy(grab.startQ).invert());
-          const twist = twistAroundUp(this.tmpQ);
+          const twist = knobTwist(this.tmpQ, grab.fingers);
           this.setTurn(grab.piece, grab.startTurn + Math.round((twist * TWIST_GAIN) / STEP));
         }
         if (v.piece.rail) {

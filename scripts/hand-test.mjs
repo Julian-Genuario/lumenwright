@@ -51,6 +51,26 @@ await page.evaluate(() => window.drive.turnPiece('left', 2, -2));
 await page.waitForTimeout(300);
 check('board 2 solved with both hands', await page.evaluate(() => window.lumenwright.game.solved));
 
+// Board 3 with a forearm roll (key turn) instead of a wrist yaw: a clockwise
+// key turn worth 2 notches should turn the mirror clockwise (-2).
+await page.evaluate(() => window.lumenwright.game.loadLevel(2));
+await page.waitForTimeout(1200);
+const rollResult = await page.evaluate(async () => {
+  const d = window.drive;
+  const g = d.pieceGrip(1);
+  await d.grasp('right');
+  await d.moveTo('right', g, 500);
+  await d.pinch('right', 1);
+  await d.wait(100);
+  await d.twist('right', (2 * Math.PI) / 8 / 1.6, 500, 'roll');
+  await d.wait(100);
+  const turn = window.lumenwright.game.view.pieces[1].turn;
+  await d.pinch('right', 0);
+  await d.grasp('right');
+  return turn;
+});
+check('forearm roll also turns a held mirror (turn = -2)', rollResult === -2);
+
 // Rails (board 10).
 await page.evaluate(() => window.lumenwright.game.loadLevel(9));
 await page.waitForTimeout(1200);

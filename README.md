@@ -31,8 +31,9 @@ in the browser.
 
 In the headset (hand tracking):
 
-- **Pinch** a knob to hold a piece, **twist your wrist** to turn it. Each notch
-  clicks.
+- **Pinch** a knob to hold a piece, **twist your wrist** to turn it. Turning
+  your hand around like a knob or rolling your forearm like a key both work.
+  Each notch clicks.
 - **Pinch and drag** a piece that sits on a brass rail to slide it.
 - **Poke** the round buttons on the front of the table: Reset, Next, and Center
   (moves the table back in front of you).
@@ -57,8 +58,9 @@ board, `M` mutes.
 - `src/game/levels.ts` holds the twelve boards.
 - `src/game/hands.ts` reads the 25 hand joints from each `XRFrame`, detects
   pinches from the thumb-to-index distance (with hysteresis), and tracks the
-  wrist rotation. A held piece turns by the twist of the wrist around the
-  vertical axis since the pinch started.
+  wrist rotation. A held piece turns by how far the wrist has rotated since
+  the pinch started, measured either around the vertical (turning a knob) or
+  around the forearm (turning a key), whichever is larger.
 - `src/game/hands-view.ts` draws the hands as jointed maple mannequin hands
   (two instanced draw calls).
 - `src/game/table-view.ts`, `environment.ts` and `textures.ts` build every

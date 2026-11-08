@@ -105,10 +105,17 @@
       const from = h.pinchValue;
       await tween(dur, (t) => h.updatePinchValue(from + (value - from) * t));
     },
-    async twist(hand, angle, dur = 600) {
+    async twist(hand, angle, dur = 600, mode = 'yaw') {
       const s = state[hand];
       const from = s.rot.clone();
+      // 'yaw' turns the hand around the vertical; 'roll' turns the forearm
+      // like a key, around the horizontal finger direction.
       const axis = new V(0, 1, 0);
+      if (mode === 'roll') {
+        axis.set(0, 0, -1).applyQuaternion(from);
+        axis.y = 0;
+        axis.normalize();
+      }
       await tween(dur, (t) => {
         s.rot.copy(new Q().setFromAxisAngle(axis, angle * t).multiply(from));
         apply(hand);
